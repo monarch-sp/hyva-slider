@@ -1,0 +1,31 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes 2020-present. All rights reserved.
+ * This product is licensed per Magento install
+ * See https://hyva.io/license
+ */
+declare(strict_types=1);
+use Hyva\Theme\Model\ViewModelRegistry;
+use Elgento\HyvaCROSemiStickyHeader\ViewModel\ProductList;
+use Hyva\Theme\ViewModel\Slider;
+$sliderViewModel      = $viewModels->require(Slider::class);
+$productListViewModel = $viewModels->require(ProductList::class);
+$sliderName        = str_replace('.', '_', $block->getNameInLayout());
+$title             = $block->getData('title') ?: '';
+$itemTemplate      =  'Magento_Catalog::product/list/item.phtml';
+$containerTemplate =  'Elgentos_HyvaCROSemiStickyHeader::product-slider-container.phtml';
+$type =  'generic';
+$items = $productListViewModel->getItems();
+$sliderHtml = $sliderViewModel->getSliderForItems($itemTemplate, $items, $containerTemplate)
+    ->setData('name', $sliderName)
+    ->setData('title', $title)
+    ->toHtml()
+    ;
+if (empty($sliderHtml)) {
+    return '';
+}
+?>
+<div class="product-slider <?= $escaper->escapeHtmlAttr($type) ?>-product-slider">
+    <?= /* @noEscape */ $sliderHtml ?>
+</div>
